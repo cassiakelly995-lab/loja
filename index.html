@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cássia Prompt — Assine e Transforme seu Trabalho</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;0,700;1,300;1,700&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030303;
+            --card: #0a0a0a;
+            --gold: #bf953f;
+            --gold-light: #fcf6ba;
+            --gold-grad: linear-gradient(135deg, #bf953f 0%, #fcf6ba 45%, #b38728 100%);
+            --border: rgba(191,149,63,0.15);
+            --border-hover: rgba(191,149,63,0.45);
+            --text: #f0ede8;
+            --subtext: rgba(240,237,232,0.45);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; overflow-x: hidden; }
+
+        /* GLOW */
+        body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(191,149,63,0.06) 0%, transparent 60%); pointer-events: none; z-index: 0; }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 24px;
+            position: relative;
+            z-index: 1;
+        }
+        .hero-kicker { font-size: 9px; font-weight: 800; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; margin-bottom: 20px; animation: fadeUp 0.8s ease both; }
+        .hero-titulo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(42px, 7vw, 80px);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 10px;
+            animation: fadeUp 0.8s 0.1s ease both;
+        }
+        .hero-titulo em { font-style: italic; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-sub { font-size: clamp(14px, 2vw, 17px); color: var(--subtext); max-width: 560px; line-height: 1.8; margin: 20px auto 40px; animation: fadeUp 0.8s 0.2s ease both; }
+        .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; animation: fadeUp 0.8s 0.3s ease both; }
+        .btn-primary { background: var(--gold-grad); color: #000; border: none; padding: 18px 36px; border-radius: 3px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .btn-primary:hover { filter: brightness(1.15); transform: translateY(-1px); }
+        .btn-ghost { background: none; color: var(--gold); border: 1px solid var(--gold); padding: 18px 36px; border-radius: 3px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; text-decoration: none; display: inline-block; }
+        .btn-ghost:hover { background: rgba(191,149,63,0.08); }
+
+        /* NÚMEROS HERO */
+        .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; justify-content: center; margin-top: 60px; animation: fadeUp 0.8s 0.4s ease both; }
+        .hstat { text-align: center; }
+        .hstat-num { font-family: 'Cormorant Garamond', serif; font-size: 40px; font-weight: 700; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+        .hstat-label { font-size: 9px; font-weight: 700; color: var(--subtext); letter-spacing: 2px; text-transform: uppercase; margin-top: 5px; }
+
+        /* ── SEÇÃO GERAL ── */
+        section { position: relative; z-index: 1; padding: 100px 24px; max-width: 1100px; margin: 0 auto; }
+        .sec-label { font-size: 9px; font-weight: 800; letter-spacing: 5px; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; }
+        .sec-titulo { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 4vw, 52px); font-weight: 700; line-height: 1.2; margin-bottom: 16px; }
+        .sec-titulo em { font-style: italic; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .sec-sub { font-size: 15px; color: var(--subtext); line-height: 1.8; max-width: 540px; margin-bottom: 50px; }
+
+        /* ── PROMPTS PREVIEW ── */
+        .prompts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+
+        .prompt-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 24px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .prompt-card:hover { border-color: var(--border-hover); }
+        .prompt-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gold-grad); transform: scaleX(0); transition: 0.3s; transform-origin: left; }
+        .prompt-card:hover::before { transform: scaleX(1); }
+
+        .pc-area { font-size: 8px; font-weight: 800; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+        .pc-titulo { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+        .pc-preview { font-size: 12px; color: var(--subtext); line-height: 1.6; margin-bottom: 16px; }
+
+        /* BLUR BLOQUEADO */
+        .bloqueado { position: relative; }
+        .blur-overlay {
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 70px;
+            background: linear-gradient(transparent, var(--card));
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 10px;
+        }
+        .lock-badge {
+            background: rgba(191,149,63,0.1);
+            border: 1px solid rgba(191,149,63,0.3);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 9px;
+            font-weight: 800;
+            color: var(--gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .pc-bloqueado {
+            font-size: 12px;
+            color: transparent;
+            line-height: 1.6;
+            filter: blur(4px);
+            user-select: none;
+            pointer-events: none;
+        }
+
+        /* ── PLANOS ── */
+        #planos { text-align: center; }
+        .planos-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 700px; margin: 0 auto; }
+
+        .plano-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 36px 30px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+        .plano-card.destaque { border-color: rgba(191,149,63,0.5); }
+        .plano-card.destaque::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gold-grad); }
+        .plano-card:hover { transform: translateY(-4px); border-color: var(--border-hover); }
+
+        .plano-badge { font-size: 8px; font-weight: 800; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 16px; display: block; }
+        .plano-nome { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+        .plano-preco { font-family: 'Cormorant Garamond', serif; font-size: 52px; font-weight: 700; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; margin-bottom: 4px; }
+        .plano-periodo { font-size: 10px; color: var(--subtext); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 24px; }
+        .plano-itens { list-style: none; margin-bottom: 28px; text-align: left; }
+        .plano-itens li { font-size: 13px; color: var(--subtext); padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); display: flex; align-items: center; gap: 10px; }
+        .plano-itens li::before { content: '✦'; color: var(--gold); font-size: 8px; flex-shrink: 0; }
+        .plano-itens li strong { color: var(--text); }
+        .btn-assinar { width: 100%; background: var(--gold-grad); color: #000; border: none; padding: 16px; border-radius: 3px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-assinar:hover { filter: brightness(1.15); }
+        .btn-assinar-ghost { width: 100%; background: none; color: var(--gold); border: 1px solid rgba(191,149,63,0.4); padding: 16px; border-radius: 3px; font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-assinar-ghost:hover { background: rgba(191,149,63,0.08); }
+
+        /* ── MODAL PIX ── */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.show { display: flex; }
+        .modal { background: #080808; border: 1px solid var(--border); border-radius: 8px; padding: 44px 36px; max-width: 440px; width: 100%; text-align: center; position: relative; animation: fadeUp 0.3s ease both; }
+        .modal::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--gold-grad); }
+        .modal-fechar { position: absolute; top: 14px; right: 18px; background: none; border: none; color: var(--subtext); font-size: 22px; cursor: pointer; }
+        .modal-plano-nome { font-size: 9px; font-weight: 800; letter-spacing: 4px; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
+        .modal-titulo { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+        .modal-preco { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 700; background: var(--gold-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; margin-bottom: 28px; }
+
+        .pix-box { background: rgba(191,149,63,0.05); border: 1px solid rgba(191,149,63,0.2); border-radius: 6px; padding: 20px; margin-bottom: 20px; }
+        .pix-label { font-size: 9px; font-weight: 800; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-bottom: 10px; }
+        .pix-key { font-size: 15px; font-weight: 700; color: var(--text); letter-spacing: 1px; word-break: break-all; margin-bottom: 10px; }
+        .pix-nome { font-size: 11px; color: var(--subtext); letter-spacing: 1px; }
+        .btn-copiar-pix { width: 100%; background: var(--gold-grad); color: #000; border: none; padding: 15px; border-radius: 3px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: 0.3s; margin-bottom: 14px; }
+        .btn-copiar-pix:hover { filter: brightness(1.15); }
+        .btn-copiar-pix.ok { background: linear-gradient(135deg, #27ae60, #52c452); color: #fff; }
+        .modal-aviso { font-size: 11px; color: var(--subtext); line-height: 1.7; }
+        .modal-aviso strong { color: var(--gold); }
+
+        /* TOAST */
+        #toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--gold-grad); color: #000; padding: 14px 28px; border-radius: 3px; font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; opacity: 0; transition: 0.3s; z-index: 9999; pointer-events: none; white-space: nowrap; }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* FOOTER */
+        footer { border-top: 1px solid var(--border); padding: 40px 24px; text-align: center; font-size: 9px; color: var(--subtext); letter-spacing: 2px; position: relative; z-index: 1; }
+
+        /* ANIMAÇÕES */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .hero-stats { gap: 24px; }
+            .planos-grid { grid-template-columns: 1fr; }
+            section { padding: 60px 20px; }
+        }
+    </style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- MODAL PIX -->
+<div class="modal-overlay" id="modal-pix">
+    <div class="modal">
+        <button class="modal-fechar" onclick="fecharModal()">×</button>
+        <div class="modal-plano-nome" id="modal-plano-nome"></div>
+        <div class="modal-titulo">Pagar com Pix</div>
+        <div class="modal-preco" id="modal-preco"></div>
+
+        <div class="pix-box">
+            <div class="pix-label">Chave Pix (CPF)</div>
+            <div class="pix-key" id="pix-key">39521484829</div>
+            <div class="pix-nome">Cássia Kelly Lins Reis</div>
+        </div>
+
+        <button class="btn-copiar-pix" id="btn-copiar-pix" onclick="copiarPix()">📋 COPIAR CHAVE PIX</button>
+
+        <div class="modal-aviso">
+            Após o pagamento, envie o <strong>comprovante</strong> para receber seu acesso.<br><br>
+            📲 WhatsApp ou Instagram: <strong>@cassiaprompt</strong>
+        </div>
+    </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-kicker">Cássia Prompt · Plataforma Profissional</div>
+    <h1 class="hero-titulo">
+        Prompts que fazem<br>
+        <em>sua IA trabalhar</em><br>
+        do jeito certo.
+    </h1>
+    <p class="hero-sub">Biblioteca completa de prompts profissionais + ferramenta V9 para gerar prompts personalizados. Para advogados, médicos, contadores, psicólogos e muito mais.</p>
+    <div class="hero-btns">
+        <a href="#prompts" class="btn-primary">VER OS PROMPTS</a>
+        <a href="#planos" class="btn-ghost">VER PLANOS</a>
+    </div>
+    <div class="hero-stats">
+        <div class="hstat"><div class="hstat-num">10</div><div class="hstat-label">Áreas</div></div>
+        <div class="hstat"><div class="hstat-num">100+</div><div class="hstat-label">Prompts</div></div>
+        <div class="hstat"><div class="hstat-num">V9</div><div class="hstat-label">Ferramenta</div></div>
+        <div class="hstat"><div class="hstat-num">∞</div><div class="hstat-label">Resultados</div></div>
+    </div>
+</div>
+
+<!-- PROMPTS PREVIEW -->
+<section id="prompts">
+    <div class="sec-label">Prévia da biblioteca</div>
+    <h2 class="sec-titulo">Veja o que te<br><em>espera dentro</em></h2>
+    <p class="sec-sub">Uma amostra dos prompts disponíveis. Assine para acessar a biblioteca completa com todos os prompts desbloqueados.</p>
+
+    <div class="prompts-grid">
+
+        <!-- LIVRE -->
+        <div class="prompt-card">
+            <div class="pc-area">⚖️ Jurídico</div>
+            <div class="pc-titulo">Petição Inicial Trabalhista</div>
+            <div class="pc-preview">Gera uma petição inicial completa para ações trabalhistas com todos os requisitos legais, citando CLT e jurisprudência do TST.</div>
+        </div>
+
+        <!-- LIVRE -->
+        <div class="prompt-card">
+            <div class="pc-area">🏥 Médico</div>
+            <div class="pc-titulo">Laudo Médico Completo</div>
+            <div class="pc-preview">Laudo técnico estruturado com anamnese, exame físico, CID-10 e conduta médica. Baseado exclusivamente nos dados fornecidos.</div>
+        </div>
+
+        <!-- LIVRE -->
+        <div class="prompt-card">
+            <div class="pc-area">💼 Negócios</div>
+            <div class="pc-titulo">Proposta Comercial Profissional</div>
+            <div class="pc-preview">Proposta de venda completa e persuasiva para conquistar clientes corporativos. Estrutura: apresentação → problema → solução → investimento.</div>
+        </div>
+
+        <!-- BLOQUEADO -->
+        <div class="prompt-card bloqueado">
+            <div class="pc-area">⚖️ Jurídico</div>
+            <div class="pc-titulo">Contrato de Prestação de Serviços</div>
+            <div class="pc-bloqueado">Contrato completo com cláusulas de proteção ao contratante e conformidade com o Código Civil arts. 593-609. Inclui objeto, prazo, valor, obrigações, rescisão e foro competente. Linguagem clara mas juridicamente protegida para garantir seus direitos.</div>
+            <div class="blur-overlay"><div class="lock-badge">🔒 Assine para ver</div></div>
+        </div>
+
+        <!-- BLOQUEADO -->
+        <div class="prompt-card bloqueado">
+            <div class="pc-area">🧠 Psicologia</div>
+            <div class="pc-titulo">Relatório Psicológico Completo</div>
+            <div class="pc-bloqueado">Relatório técnico com anamnese, avaliação e recomendações conforme Resolução CFP 06/2019. Estrutura: identificação → demanda → procedimentos → análise → conclusão. Linguagem técnica e ética para documentação clínica profissional.</div>
+            <div class="blur-overlay"><div class="lock-badge">🔒 Assine para ver</div></div>
+        </div>
+
+        <!-- BLOQUEADO -->
+        <div class="prompt-card bloqueado">
+            <div class="pc-area">📣 Marketing</div>
+            <div class="pc-titulo">Copy para Página de Vendas</div>
+            <div class="pc-bloqueado">Texto de vendas com gatilhos mentais, prova social e CTA irresistível. Estrutura completa: headline → dor → solução → benefícios → prova → oferta → urgência. Linguagem persuasiva adaptada ao seu público-alvo específico.</div>
+            <div class="blur-overlay"><div class="lock-badge">🔒 Assine para ver</div></div>
+        </div>
+
+        <!-- BLOQUEADO -->
+        <div class="prompt-card bloqueado">
+            <div class="pc-area">📊 Contábil</div>
+            <div class="pc-titulo">Parecer Contábil Técnico</div>
+            <div class="pc-bloqueado">Parecer técnico com fundamentação nas normas NBC, IFRS e legislação tributária vigente. Estrutura: objeto → análise → fundamentação → conclusão. Exclusivo para contadores e auditores que precisam de documentação impecável.</div>
+            <div class="blur-overlay"><div class="lock-badge">🔒 Assine para ver</div></div>
+        </div>
+
+        <!-- BLOQUEADO -->
+        <div class="prompt-card bloqueado">
+            <div class="pc-area">📚 Educação</div>
+            <div class="pc-titulo">Plano de Aula BNCC</div>
+            <div class="pc-bloqueado">Plano de aula completo alinhado à BNCC com objetivos, habilidades, metodologias ativas, recursos e avaliação. Adaptado ao ano escolar e contexto da turma para resultados pedagógicos reais e mensuráveis.</div>
+            <div class="blur-overlay"><div class="lock-badge">🔒 Assine para ver</div></div>
+        </div>
+
+        <!-- BLOQUEADO -->
+        <div class="prompt-card bloqueado">
+            <div class="pc-area">🔧 Engenharia</div>
+            <div class="pc-titulo">Laudo Técnico de Vistoria</div>
+            <div class="pc-bloqueado">Laudo de vistoria com fundamentação nas normas ABNT e ART do responsável técnico. Estrutura: objeto → metodologia → análise → conclusão → recomendações. Desenvolvido para engenheiros e arquitetos com CREA/CAU ativo.</div>
+            <div class="blur-overlay"><div class="lock-badge">🔒 Assine para ver</div></div>
+        </div>
+
+    </div>
+
+    <div style="text-align:center;margin-top:40px;">
+        <a href="#planos" class="btn-primary">QUERO ACESSAR TUDO →</a>
+    </div>
+</section>
+
+<!-- PLANOS -->
+<section id="planos" style="text-align:center;">
+    <div class="sec-label" style="text-align:center;">Escolha seu plano</div>
+    <h2 class="sec-titulo" style="text-align:center;">Invista no seu<br><em>tempo profissional</em></h2>
+    <p class="sec-sub" style="margin:0 auto 50px;">Cancele quando quiser. Sem fidelidade. Sem surpresas.</p>
+
+    <div class="planos-grid">
+
+        <!-- BÁSICO -->
+        <div class="plano-card">
+            <span class="plano-badge">Plano Básico</span>
+            <div class="plano-nome">PROMPTUS</div>
+            <div class="plano-preco">R$47</div>
+            <div class="plano-periodo">por mês</div>
+            <ul class="plano-itens">
+                <li><strong>100+ prompts</strong> profissionais</li>
+                <li><strong>10 áreas</strong> profissionais</li>
+                <li>Busca e filtros por categoria</li>
+                <li>Acesso imediato após pagamento</li>
+                <li>Atualizações mensais de prompts</li>
+            </ul>
+            <button class="btn-assinar-ghost" onclick="abrirModal('Plano Básico — PROMPTUS', 'R$47/mês')">ASSINAR AGORA</button>
+        </div>
+
+        <!-- PRO -->
+        <div class="plano-card destaque">
+            <span class="plano-badge">⭐ Mais popular</span>
+            <div class="plano-nome">PRO</div>
+            <div class="plano-preco">R$97</div>
+            <div class="plano-periodo">por mês</div>
+            <ul class="plano-itens">
+                <li><strong>Tudo do Básico</strong></li>
+                <li><strong>V9 Power Edition</strong> incluso</li>
+                <li>Prompts personalizados com IA</li>
+                <li>Importação de PDF</li>
+                <li>Exportação para Word</li>
+                <li>10 personas especializadas</li>
+                <li>Suporte prioritário</li>
+            </ul>
+            <button class="btn-assinar" onclick="abrirModal('Plano Pro — V9 + PROMPTUS', 'R$97/mês')">ASSINAR AGORA</button>
+        </div>
+
+    </div>
+
+    <p style="font-size:11px;color:var(--subtext);margin-top:30px;letter-spacing:0.5px;">Pagamento via Pix · Acesso liberado em até 1 hora após confirmação</p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    CÁSSIA PROMPT ® 2026 &nbsp;·&nbsp; TODOS OS DIREITOS RESERVADOS &nbsp;·&nbsp; MADE IN BRAZIL
+</footer>
+
+<script>
+    function abrirModal(nome, preco) {
+        document.getElementById('modal-plano-nome').innerText = nome;
+        document.getElementById('modal-preco').innerText = preco;
+        document.getElementById('modal-pix').classList.add('show');
+    }
+
+    function fecharModal() {
+        document.getElementById('modal-pix').classList.remove('show');
+        const btn = document.getElementById('btn-copiar-pix');
+        btn.innerText = '📋 COPIAR CHAVE PIX';
+        btn.classList.remove('ok');
+    }
+
+    document.getElementById('modal-pix').addEventListener('click', function(e) {
+        if (e.target === this) fecharModal();
+    });
+
+    function copiarPix() {
+        const chave = '39521484829';
+        const btn = document.getElementById('btn-copiar-pix');
+        const sucesso = () => {
+            btn.innerText = '✓ CHAVE COPIADA!';
+            btn.classList.add('ok');
+            showToast('CHAVE PIX COPIADA!');
+            setTimeout(() => { btn.innerText = '📋 COPIAR CHAVE PIX'; btn.classList.remove('ok'); }, 3000);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(chave).then(sucesso).catch(() => fallback(chave, sucesso));
+        } else { fallback(chave, sucesso); }
+    }
+
+    function fallback(texto, cb) {
+        const ta = document.createElement('textarea');
+        ta.value = texto; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); cb(); } catch(e) {}
+        document.body.removeChild(ta);
+    }
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2500);
+    }
+</script>
+</body>
+</html>
